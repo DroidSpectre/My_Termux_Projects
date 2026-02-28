@@ -1,0 +1,76 @@
+### SearXNG ###
+pkg install -y git curl wget nano vim tmux openssl
+pkg install openssl-tool
+pkg install pybind11
+pip install fasttext-predict
+pip install certifi babel flask-babel flask pygments python-dateutil httpx sniffio valkey markdown-it-py
+pip install -U pip setuptools wheel pyyaml msgspec
+pkg install -y python libxml2 libxslt clang binutils
+
+### Clone SearXNG and create virtualenv
+
+cd ~
+git clone https://github.com/searxng/searxng searxng-src
+python -m venv searxng-pyenv
+source searxng-pyenv/bin/activate
+
+###Your prompt should now show (searxng-pyenv).
+
+###Install SearXNG
+
+pip install -U pip setuptools wheel pyyaml msgspec
+cd ~/searxng-src
+pip install --use-pep517 --no-build-isolation -e .
+
+###Create SearXNG config
+
+mkdir -p ~/.config/searxng
+cp utils/templates/etc/searxng/settings.yml ~/.config/searxng/settings.yml
+
+###Edit the config:
+
+nano ~/.config/searxng/settings.yml
+
+###Find and modify the following sections:
+
+general:
+  debug: false
+  instance_name: "SearXNG"
+
+server:
+  bind_address: "127.0.0.1"
+  port: 8888
+  secret_key: "YOUR_RANDOM_HEX_STRING_HERE"
+
+formats:
+  - html
+  - json
+
+###Generate a random secret key in another Termux tab:
+
+openssl rand -hex 16
+
+###Copy the output and paste it into secret_key in the config. Save with Ctrl+O, Enter, Ctrl+X.
+
+###Start SearXNG in tmux
+# Exit virtualenv first if needed, then:
+
+tmux new -s searxng
+
+###Inside the tmux session:
+
+cd ~
+source searxng-pyenv/bin/activate
+export SEARXNG_SETTINGS_PATH="$HOME/.config/searxng/settings.yml"
+cd ~/searxng-src
+python searx/webapp.py
+
+###You should see output like: Running on http://127.0.0.1:8888/. 
+
+###Detach from tmux with Ctrl+b, then d. The session will stay active until killed. To kill the session: tmux kill-session
+
+###Test SearXNG: Open a mobile browser and go to http://localhost:8888
+
+###You should see the SearXNG interface.
+
+### IT FUCKING WORKS!!! (with errors) ###

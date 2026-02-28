@@ -1,0 +1,59 @@
+Perplexica in Termux
+
+pkg install proot-distro
+
+proot-distro list
+### shows list of available distros
+
+proot-distro install alpine
+proot-distro login alpine
+
+apk update
+apk upgrade
+
+apk add nodejs npm yarn git build-base python3 alpine-sdk
+
+node --version
+npm --version
+### this checks versions
+
+npm install html2canvas dompurify canvg better-sqlite3
+
+npx update-browserslist-db@latest
+### that should cover all of the dependencies
+
+cd ~
+git clone https://github.com/ItzCrazyKns/Perplexica.git
+cd Perplexica
+
+npm install
+
+fix 1: npm install --omit=optional
+### this one worked for me (i had issues with dependencies, but the above list might fix that)
+
+fix 2: npm install --build-from-source -- --lto=full
+
+fix 3: npm install --build-from-source -- --lto=false
+
+npm audit fix --force
+
+npm run build
+
+npm run start
+
+Fix 1: npm run start -- --hostname 127.0.0.1 --port 3000
+
+Fix 2: HOSTNAME=127.0.0.1 PORT=3000 npm run start
+
+
+Exiting and re-entering Alpine
+
+Exit: Press Ctrl+D or type exit.
+
+Re-enter: 
+
+proot-distro login alpine
+cd Perplexica
+npm run start -- --hostname 127.0.0.1 --port 3000
+### This works for me
+
